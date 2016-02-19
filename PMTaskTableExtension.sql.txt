@@ -1,0 +1,23 @@
+CREATE TABLE [dbo].[PMTaskTableExtension]
+(
+[CompanyID] [int] NOT NULL,
+[ProjectID] [int] NOT NULL,
+[TaskID] [int] NOT NULL,
+[DeletedDatabaseRecord] [bit] NOT NULL,
+[ParentID] [int] NULL
+CONSTRAINT [PMTaskTableExtension_PK] PRIMARY KEY CLUSTERED
+(
+[CompanyID] ASC,
+[ProjectID] ASC,
+[TaskID] ASC
+)
+WITH (PAD_INDEX = OFF,
+STATISTICS_NORECOMPUTE = OFF,
+IGNORE_DUP_KEY = OFF,
+ALLOW_ROW_LOCKS = ON,
+ALLOW_PAGE_LOCKS = ON)
+ON [PRIMARY]
+) ON [PRIMARY]
+ALTER TABLE [dbo].[PMTaskTableExtension] ADD DEFAULT ((0))
+FOR [DeletedDatabaseRecord]
+GO
