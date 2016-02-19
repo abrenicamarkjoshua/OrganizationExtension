@@ -17,9 +17,26 @@ namespace TreeStructure
         {
         }
         [PXDBInt]
-        [PXDefault(0)]
+        [PXDefault()]
+        [PXSelector(typeof(PMTask.taskID),
+            typeof(PMTask.taskID),
+            typeof(PMTask.description
+            ))]
         [PXUIField(DisplayName = "Parent Task ID")]
-        public string ParentID { get; set; }
+        public int? ParentID {
+            get
+            {
+                return _parentID;
+            }
+            set
+            {
+                _parentID = value;
+            }
+        }
+        protected int? _parentID;
+
         #endregion ParentID
+        
+
     }
 }
