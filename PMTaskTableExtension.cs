@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 namespace TreeStructure
 {
     [PXTable(typeof(PMTask.taskID),
+        typeof(PMTask.projectID),
         IsOptional = true)]
     public class PMTaskTableExtension : PXCacheExtension<PMTask>
     {
@@ -16,14 +17,14 @@ namespace TreeStructure
         public abstract class parentID : PX.Data.IBqlField
         {
         }
-        [PXDBInt]
-        [PXDefault()]
-        [PXSelector(typeof(PMTask.taskID),
+        [PXDBString(15, IsUnicode = true)]
+        [PXSelector(typeof(Search<PMTask.taskCD>),
             typeof(PMTask.taskID),
-            typeof(PMTask.description
-            ))]
-        [PXUIField(DisplayName = "Parent Task ID")]
-        public int? ParentID {
+            typeof(PMTask.description),
+            typeof(PMTask.status)
+            )]
+        [PXUIField(DisplayName = "Parent Task ID", Visibility = PXUIVisibility.SelectorVisible)]
+        public virtual String ParentID {
             get
             {
                 return _parentID;
@@ -33,10 +34,9 @@ namespace TreeStructure
                 _parentID = value;
             }
         }
-        protected int? _parentID;
+        public String _parentID;
 
         #endregion ParentID
-        
-
+      
     }
 }
