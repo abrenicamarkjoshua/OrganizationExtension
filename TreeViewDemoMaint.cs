@@ -127,17 +127,9 @@ namespace TreeViewDemo
         #endregion
 
         #region Actions
-        //public PXSave<TaskTableExtension> Save;
-        //public PXCancel<TaskTableExtension> Cancel;
         public PXSave<TaskTableExtension> Save;
         public PXCancel<TaskTableExtension> Cancel;
-        public PXInsert<TaskTableExtension> Insert;
-        public PXCopyPasteAction<TaskTableExtension> CopyPaste;
-        public PXDelete<TaskTableExtension> Delete;
-        public PXFirst<TaskTableExtension> First;
-        public PXPrevious<TaskTableExtension> Previous;
-        public PXNext<TaskTableExtension> Next;
-        public PXLast<TaskTableExtension> Last;
+
         #endregion
 
         #region Event Handlers

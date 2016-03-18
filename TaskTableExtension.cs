@@ -47,12 +47,11 @@ namespace TreeViewDemo.DAC
         [PXDBInt]
         [PXDBLiteDefault(typeof(TaskTableExtension.taskID))]
         [PXUIField(DisplayName = "Parent Task ID", Visibility = PXUIVisibility.SelectorVisible)]
-        [PXSelector(typeof(TaskTableExtension.taskID),
+        [PXSelector(typeof(Search<TaskTableExtension.taskID>),
                     typeof(TaskTableExtension.taskID),
                     typeof(TaskTableExtension.taskCD),
                     typeof(TaskTableExtension.description)
             )]
-        [PXDefault(0)]
         public virtual int? ParentTaskID { get; set; }
         #endregion
 
