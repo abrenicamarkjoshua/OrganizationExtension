@@ -19,7 +19,7 @@ namespace TreeViewDemo.DAC
         public abstract class taskCD : PX.Data.IBqlField
         {
         }
-        [PXDBString()]
+        [PXDBString(10, IsKey = true, InputMask = "<CCCCCCCCCC")]
         [PXUIField(DisplayName = "Task ID", Visibility = PXUIVisibility.SelectorVisible)]
         [PXDefault]
         [PXSelector(typeof(Search<PMTask.taskCD>),
@@ -46,12 +46,6 @@ namespace TreeViewDemo.DAC
         }
         [PXDBInt]
         [PXDBLiteDefault(typeof(TaskTableExtension.taskID))]
-        [PXUIField(DisplayName = "Parent Task ID", Visibility = PXUIVisibility.SelectorVisible)]
-        [PXSelector(typeof(Search<TaskTableExtension.taskID>),
-                    typeof(TaskTableExtension.taskID),
-                    typeof(TaskTableExtension.taskCD),
-                    typeof(TaskTableExtension.description)
-            )]
         public virtual int? ParentTaskID { get; set; }
         #endregion
 
