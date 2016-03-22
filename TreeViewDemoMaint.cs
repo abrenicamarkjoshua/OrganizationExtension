@@ -11,7 +11,6 @@ namespace TreeViewDemo
 {
     public class TreeViewDemoMaint : PXGraph<TreeViewDemoMaint>
     {
-        
         #region SelectedNode
         public class SelectedNode : IBqlTable
         {
@@ -23,12 +22,12 @@ namespace TreeViewDemo
             public virtual int? TreeViewTaskID { get; set; }
             #endregion
 
-            #region GridTaskID
-            public abstract class gridTaskID : PX.Data.IBqlField
+            #region GridCategoryID
+            public abstract class gridCategoryID : PX.Data.IBqlField
             {
             }
             [PXDBInt(IsKey = true)]
-            public virtual int? GridTaskID { get; set; }
+            public virtual int? GridCategoryID { get; set; }
             #endregion
         }
         #endregion
@@ -48,133 +47,132 @@ namespace TreeViewDemo
             }
         }
 
-        private bool skipTaskIDVerification = false;
-        protected bool SkipTaskIDVerification
+        private bool skipCategoryIDVerification = false;
+        protected bool SkipCategoryIDVerification
         {
             get
             {
-                return skipTaskIDVerification;
+                return skipCategoryIDVerification;
             }
         }
         #endregion
 
         #region Data Members
-        public PXSelect<TaskTableExtension,
-                   Where<TaskTableExtension.parentTaskID, Equal<Argument<int?>>>,
-                   OrderBy<Asc<TaskTableExtension.sortOrder>>> Folders;
+        public PXSelect<TreeViewTask,
+                   Where<TreeViewTask.parentCategoryID, Equal<Argument<int?>>>,
+                   OrderBy<Asc<TreeViewTask.sortOrder>>> Folders;
 
         protected virtual IEnumerable folders(
             [PXInt]
-			int? taskID)
+            int? categoryID)
         {
-            if (taskID == null)
+            if (categoryID == null)
             {
-                yield return new TaskTableExtension()
+                yield return new TreeViewTask()
                 {
-                    TaskID = 0,
+                    CategoryID = 0,
                     Description = PXSiteMap.RootNode.Title
                 };
             }
-            foreach (TaskTableExtension item in PXSelect<TaskTableExtension,
-                                                  Where<TaskTableExtension.parentTaskID, Equal<Required<TaskTableExtension.taskID>>>>
-                                              .Select(this, taskID))
+            foreach (TreeViewTask item in PXSelect<TreeViewTask,
+                                                  Where<TreeViewTask.parentCategoryID, Equal<Required<TreeViewTask.categoryID>>>>
+                                              .Select(this, categoryID))
             {
                 if (!string.IsNullOrEmpty(item.Description))
                     yield return item;
             }
         }
 
-        public PXSelect<TaskTableExtension,
-                   Where<TaskTableExtension.parentTaskID, Equal<Argument<int?>>>,
-                   OrderBy<Asc<TaskTableExtension.parentTaskID, Asc<TaskTableExtension.sortOrder>>>> Items;
+        public PXSelect<TreeViewTask,
+                   Where<TreeViewTask.parentCategoryID, Equal<Argument<int?>>>,
+                   OrderBy<Asc<TreeViewTask.parentCategoryID, Asc<TreeViewTask.sortOrder>>>> Items;
 
         protected virtual IEnumerable items(
             [PXInt]
-			int? taskID)
+            int? categoryID)
         {
 
 
 
-            if (taskID == null && Folders.Current != null)
-                taskID = Folders.Current.TaskID;
+            if (categoryID == null && Folders.Current != null)
+                categoryID = Folders.Current.CategoryID;
 
 
 
 
-            if (taskID == null)
+            if (categoryID == null)
             {
                 Items.Cache.AllowInsert = false;
                 return null;
             }
 
-            if (!skipTaskIDVerification)
+            if (!skipCategoryIDVerification)
             {
-                if (taskID != 0)
-                    Items.Cache.AllowInsert = PXSelect<TaskTableExtension,
-                                                  Where<TaskTableExtension.taskID, Equal<Required<TaskTableExtension.taskID>>>>
-                                              .Select(this, taskID).Count > 0;
-                CurrentSelected.TreeViewTaskID = taskID;
+                if (categoryID != 0)
+                    Items.Cache.AllowInsert = PXSelect<TreeViewTask,
+                                                  Where<TreeViewTask.categoryID, Equal<Required<TreeViewTask.categoryID>>>>
+                                              .Select(this, categoryID).Count > 0;
+                CurrentSelected.TreeViewTaskID = categoryID;
             }
             else
-                skipTaskIDVerification = false;
-            return PXSelect<TaskTableExtension,
-                       Where<TaskTableExtension.parentTaskID, Equal<Required<TaskTableExtension.taskID>>>>
-                   .Select(this, taskID);
+                skipCategoryIDVerification = false;
+            return PXSelect<TreeViewTask,
+                       Where<TreeViewTask.parentCategoryID, Equal<Required<TreeViewTask.categoryID>>>>
+                   .Select(this, categoryID);
         }
 
-        public PXSelect<TaskTableExtension,
-                   Where<TaskTableExtension.taskID, Equal<Required<TaskTableExtension.taskID>>>> Item;
+        public PXSelect<TreeViewTask,
+                   Where<TreeViewTask.categoryID, Equal<Required<TreeViewTask.categoryID>>>> Item;
         #endregion
 
         #region Actions
-        public PXSave<TaskTableExtension> Save;
-        public PXCancel<TaskTableExtension> Cancel;
-
+        public PXSave<TreeViewTask> Save;
+        public PXCancel<TreeViewTask> Cancel;
         #endregion
 
         #region Event Handlers
-        protected virtual void TaskTableExtension_RowSelected(PXCache sender, PXRowSelectedEventArgs e)
+        protected virtual void TreeViewTask_RowSelected(PXCache sender, PXRowSelectedEventArgs e)
         {
-            TaskTableExtension row = e.Row as TaskTableExtension;
+            TreeViewTask row = e.Row as TreeViewTask;
             if (row != null)
-                CurrentSelected.GridTaskID = row.TaskID;
+                CurrentSelected.GridCategoryID = row.CategoryID;
         }
 
-        protected virtual void TaskTableExtension_RowDeleted(PXCache sender, PXRowDeletedEventArgs e)
+        protected virtual void TreeViewTask_RowDeleted(PXCache sender, PXRowDeletedEventArgs e)
         {
-            TaskTableExtension row = e.Row as TaskTableExtension;
+            TreeViewTask row = e.Row as TreeViewTask;
             if (row == null) return;
 
             DeleteRecurring(row);
         }
 
-        protected virtual void TaskTableExtension_ParentTaskID_FieldDefaulting(PXCache sender, PXFieldDefaultingEventArgs e)
+        protected virtual void TreeViewTask_ParentCategoryID_FieldDefaulting(PXCache sender, PXFieldDefaultingEventArgs e)
         {
-            TaskTableExtension row = e.Row as TaskTableExtension;
+            TreeViewTask row = e.Row as TreeViewTask;
             if (row == null) return;
 
             e.NewValue = CurrentSelected.TreeViewTaskID ?? 0;
             e.Cancel = true;
         }
 
-        protected virtual void TaskTableExtension_SortOrder_FieldDefaulting(PXCache sender, PXFieldDefaultingEventArgs e)
+        protected virtual void TreeViewTask_SortOrder_FieldDefaulting(PXCache sender, PXFieldDefaultingEventArgs e)
         {
-            TaskTableExtension row = (TaskTableExtension)e.Row;
+            TreeViewTask row = (TreeViewTask)e.Row;
             if (row == null) return;
 
             e.NewValue = 1;
             e.Cancel = true;
 
-            PXResultset<TaskTableExtension> list = Items.Select(row.ParentTaskID);
+            PXResultset<TreeViewTask> list = Items.Select(row.ParentCategoryID);
             if (list.Count > 0)
             {
-                TaskTableExtension last = list[list.Count - 1];
+                TreeViewTask last = list[list.Count - 1];
                 e.NewValue = last.SortOrder + 1;
             }
         }
         #endregion
 
-        public PXAction<TaskTableExtension> CheckCurrentObject;
+        public PXAction<TreeViewTask> CheckCurrentObject;
         [PXUIField(DisplayName = "Check Current Object")]
         [PXButton]
         public virtual IEnumerable checkCurrentObject(PXAdapter adapter)
@@ -182,84 +180,84 @@ namespace TreeViewDemo
             if (Items.Current == null)
                 throw new PXException("Current object is null");
             else
-                throw new PXException(string.Format("Current object TaskID = {0}", Items.Current.TaskCD));
+                throw new PXException(string.Format("Current object CategoryID = {0}", Items.Current.CategoryCD));
         }
 
         #region Moving Actions
-        public PXAction<TaskTableExtension> Left;
+        public PXAction<TreeViewTask> Left;
         [PXUIField(MapEnableRights = PXCacheRights.Select, MapViewRights = PXCacheRights.Select)]
         [PXButton]
         public virtual IEnumerable left(PXAdapter adapter)
         {
-            TaskTableExtension current = Item.SelectWindowed(0, 1, CurrentSelected.TreeViewTaskID);
-            if (current != null && current.ParentTaskID != 0)
+            TreeViewTask current = Item.SelectWindowed(0, 1, CurrentSelected.TreeViewTaskID);
+            if (current != null && current.ParentCategoryID != 0)
             {
-                TaskTableExtension parent = Item.SelectWindowed(0, 1, current.ParentTaskID);
+                TreeViewTask parent = Item.SelectWindowed(0, 1, current.ParentCategoryID);
                 if (parent != null)
                 {
                     int parentIndex;
-                    PXResultset<TaskTableExtension> items = SelectSiblings(parent.ParentTaskID,
-                                                                         parent.TaskID,
+                    PXResultset<TreeViewTask> items = SelectSiblings(parent.ParentCategoryID,
+                                                                         parent.CategoryID,
                                                                          out parentIndex);
                     if (parentIndex >= 0)
                     {
-                        TaskTableExtension last = items[items.Count - 1];
-                        current = (TaskTableExtension)Items.Cache.CreateCopy(current);
-                        current.ParentTaskID = parent.ParentTaskID;
+                        TreeViewTask last = items[items.Count - 1];
+                        current = (TreeViewTask)Items.Cache.CreateCopy(current);
+                        current.ParentCategoryID = parent.ParentCategoryID;
                         current.SortOrder = last.SortOrder + 1;
                         Items.Update(current);
-                        PXSelect<TaskTableExtension, Where<TaskTableExtension.parentTaskID, Equal<Required<TaskTableExtension.taskID>>>>.Clear(this);
+                        PXSelect<TreeViewTask, Where<TreeViewTask.parentCategoryID, Equal<Required<TreeViewTask.categoryID>>>>.Clear(this);
                     }
                 }
             }
             return adapter.Get();
         }
 
-        public PXAction<TaskTableExtension> Right;
+        public PXAction<TreeViewTask> Right;
         [PXUIField(MapEnableRights = PXCacheRights.Select, MapViewRights = PXCacheRights.Select)]
         [PXButton]
         public virtual IEnumerable right(PXAdapter adapter)
         {
-            TaskTableExtension current = Item.SelectWindowed(0, 1, CurrentSelected.TreeViewTaskID);
+            TreeViewTask current = Item.SelectWindowed(0, 1, CurrentSelected.TreeViewTaskID);
             if (current != null)
             {
                 int currentItemIndex;
-                PXResultset<TaskTableExtension> items = SelectSiblings(current.ParentTaskID,
-                                                                     current.TaskID,
+                PXResultset<TreeViewTask> items = SelectSiblings(current.ParentCategoryID,
+                                                                     current.CategoryID,
                                                                      out currentItemIndex);
                 if (currentItemIndex > 0)
                 {
-                    TaskTableExtension prev = items[currentItemIndex - 1];
-                    items = SelectSiblings(prev.TaskID);
+                    TreeViewTask prev = items[currentItemIndex - 1];
+                    items = SelectSiblings(prev.CategoryID);
                     int index = 1;
                     if (items.Count > 0)
                     {
-                        TaskTableExtension last = items[items.Count - 1];
+                        TreeViewTask last = items[items.Count - 1];
                         index = (last.SortOrder ?? 0) + 1;
                     }
-                    current = (TaskTableExtension)Items.Cache.CreateCopy(current);
-                    current.ParentTaskID = prev.TaskID;
+                    current = (TreeViewTask)Items.Cache.CreateCopy(current);
+                    current.ParentCategoryID = prev.CategoryID;
                     current.SortOrder = index;
                     Items.Update(current);
-                    PXSelect<TaskTableExtension, Where<TaskTableExtension.parentTaskID, Equal<Required<TaskTableExtension.taskID>>>>.Clear(this);
+                    PXSelect<TreeViewTask, Where<TreeViewTask.parentCategoryID, Equal<Required<TreeViewTask.categoryID>>>>.Clear(this);
                 }
             }
             return adapter.Get();
         }
 
-        public PXAction<TaskTableExtension> Down;
+        public PXAction<TreeViewTask> Down;
         [PXUIField(MapEnableRights = PXCacheRights.Select, MapViewRights = PXCacheRights.Select)]
         [PXButton]
         public virtual IEnumerable down(PXAdapter adapter)
         {
             int currentItemIndex;
-            PXResultset<TaskTableExtension> items = SelectSiblings(CurrentSelected.TreeViewTaskID,
-                                                                 CurrentSelected.GridTaskID,
+            PXResultset<TreeViewTask> items = SelectSiblings(CurrentSelected.TreeViewTaskID,
+                                                                 CurrentSelected.GridCategoryID,
                                                                  out currentItemIndex);
             if (currentItemIndex >= 0 && currentItemIndex < items.Count - 1)
             {
-                TaskTableExtension current = items[currentItemIndex];
-                TaskTableExtension next = items[currentItemIndex + 1];
+                TreeViewTask current = items[currentItemIndex];
+                TreeViewTask next = items[currentItemIndex + 1];
 
                 current.SortOrder += 1;
                 next.SortOrder -= 1;
@@ -270,19 +268,19 @@ namespace TreeViewDemo
             return adapter.Get();
         }
 
-        public PXAction<TaskTableExtension> Up;
+        public PXAction<TreeViewTask> Up;
         [PXUIField(MapEnableRights = PXCacheRights.Select, MapViewRights = PXCacheRights.Select)]
         [PXButton]
         public virtual IEnumerable up(PXAdapter adapter)
         {
             int currentItemIndex;
-            PXResultset<TaskTableExtension> items = SelectSiblings(CurrentSelected.TreeViewTaskID,
-                                                                 CurrentSelected.GridTaskID,
+            PXResultset<TreeViewTask> items = SelectSiblings(CurrentSelected.TreeViewTaskID,
+                                                                 CurrentSelected.GridCategoryID,
                                                                  out currentItemIndex);
             if (currentItemIndex > 0)
             {
-                TaskTableExtension current = items[currentItemIndex];
-                TaskTableExtension prev = items[currentItemIndex - 1];
+                TreeViewTask current = items[currentItemIndex];
+                TreeViewTask prev = items[currentItemIndex - 1];
 
                 current.SortOrder -= 1;
                 prev.SortOrder += 1;
@@ -298,38 +296,38 @@ namespace TreeViewDemo
         public override void Persist()
         {
             base.Persist();
-            skipTaskIDVerification = true;
+            skipCategoryIDVerification = true;
         }
 
-        protected void DeleteRecurring(TaskTableExtension map, bool deleteRootNode = false)
+        protected void DeleteRecurring(TreeViewTask map, bool deleteRootNode = false)
         {
             if (map != null)
             {
-                foreach (TaskTableExtension child in PXSelect<TaskTableExtension,
-                                                       Where<TaskTableExtension.parentTaskID, Equal<Required<TaskTableExtension.taskID>>>>
-                                                   .Select(this, map.TaskID))
+                foreach (TreeViewTask child in PXSelect<TreeViewTask,
+                                                       Where<TreeViewTask.parentCategoryID, Equal<Required<TreeViewTask.categoryID>>>>
+                                                   .Select(this, map.CategoryID))
                     DeleteRecurring(child, true);
                 if (deleteRootNode)
                     Items.Cache.Delete(map);
             }
         }
 
-        protected PXResultset<TaskTableExtension> SelectSiblings(int? patentID)
+        protected PXResultset<TreeViewTask> SelectSiblings(int? patentID)
         {
             int currentIndex;
             return SelectSiblings(patentID, 0, out currentIndex);
         }
 
-        protected PXResultset<TaskTableExtension> SelectSiblings(int? parentID, int? taskID, out int currentIndex)
+        protected PXResultset<TreeViewTask> SelectSiblings(int? parentID, int? categoryID, out int currentIndex)
         {
             currentIndex = -1;
             if (parentID == null) return null;
-            PXResultset<TaskTableExtension> items = Items.Select(parentID);
+            PXResultset<TreeViewTask> items = Items.Select(parentID);
 
             int i = 0;
-            foreach (TaskTableExtension item in items)
+            foreach (TreeViewTask item in items)
             {
-                if (item.TaskID == taskID)
+                if (item.CategoryID == categoryID)
                     currentIndex = i;
                 item.SortOrder = i + 1;
                 Items.Update(item);
@@ -339,9 +337,9 @@ namespace TreeViewDemo
         }
 
         #endregion
-
-        #region project task budget
-        public ProjectStatusSelect<PMProjectStatusEx, Where<PMProjectStatusEx.accountGroupID, IsNotNull>, OrderBy<Asc<PMProjectStatusEx.sortOrder>>> ProjectStatus;
+    
+    #region project task budget
+    public ProjectStatusSelect<PMProjectStatusEx, Where<PMProjectStatusEx.accountGroupID, IsNotNull>, OrderBy<Asc<PMProjectStatusEx.sortOrder>>> ProjectStatus;
         public PXSelectJoin<PMTask, LeftJoin<PMProject, On<PMTask.projectID, Equal<PMProject.contractID>>>, Where<PMProject.nonProject, Equal<False>, And<PMProject.isTemplate, Equal<False>>>> Task;
 
         public virtual IEnumerable projectStatus()
@@ -466,10 +464,6 @@ namespace TreeViewDemo
             ProjectStatus.Cache.IsDirty = isDirty;
         }
 
-        #endregion
-
-        #region TaskTableExtension
-        public PXSelect<TaskTableExtension> TaskTableExtension;
         #endregion
 
     }

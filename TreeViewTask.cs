@@ -3,31 +3,25 @@ using PX.Objects.PM;
 
 namespace TreeViewDemo.DAC
 {
-    
-    public class TaskTableExtension : IBqlTable
+
+    public class TreeViewTask : IBqlTable
     {
-        #region TaskID
-        public abstract class taskID : PX.Data.IBqlField
+        #region CategoryID
+        public abstract class categoryID : PX.Data.IBqlField
         {
         }
         [PXDBIdentity]
-         public virtual int? TaskID { get; set; }
+        public virtual int? CategoryID { get; set; }
         #endregion
 
-        #region TaskCD
-        
-        public abstract class taskCD : PX.Data.IBqlField
+        #region CategoryCD
+        public abstract class categoryCD : PX.Data.IBqlField
         {
         }
         [PXDBString(10, IsKey = true, InputMask = "<CCCCCCCCCC")]
-        [PXUIField(DisplayName = "Task ID", Visibility = PXUIVisibility.SelectorVisible)]
+        [PXUIField(DisplayName = "Category ID")]
         [PXDefault]
-        [PXSelector(typeof(Search<PMTask.taskCD>),
-                    typeof(PMTask.taskID),
-                    typeof(PMTask.taskCD),
-                    typeof(PMTask.description)
-            )]
-        public virtual string TaskCD { get; set; }
+        public virtual string CategoryCD { get; set; }
         #endregion
 
         #region Description
@@ -40,13 +34,13 @@ namespace TreeViewDemo.DAC
         public virtual string Description { get; set; }
         #endregion
 
-        #region ParentTaskID
-        public abstract class parentTaskID : PX.Data.IBqlField
+        #region ParentCategoryID
+        public abstract class parentCategoryID : PX.Data.IBqlField
         {
         }
         [PXDBInt]
-        [PXDBLiteDefault(typeof(TaskTableExtension.taskID))]
-        public virtual int? ParentTaskID { get; set; }
+        [PXDBLiteDefault(typeof(TreeViewTask.categoryID))]
+        public virtual int? ParentCategoryID { get; set; }
         #endregion
 
         #region SortOrder

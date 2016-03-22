@@ -99,7 +99,7 @@
     <Compile Include="PMTaskTableExtension.cs" />
     <Compile Include="ProjectTaskEntryExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TaskTableExtension.cs" />
+    <Compile Include="TreeViewTask.cs" />
     <Compile Include="TreeViewDemoMaint.cs" />
   </ItemGroup>
   <ItemGroup />

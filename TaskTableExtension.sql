@@ -1,17 +1,17 @@
 CREATE TABLE [dbo].[TaskTableExtension]
 (
     [CompanyID] [int] NOT NULL,
-    [TaskID] [int] IDENTITY(1,1) NOT NULL,
-    [TaskCD] [nvarchar](10) NOT NULL,
-    [ProjectID] [int] NOT NULL,
+    [TaskTableExtensionID] [int] IDENTITY(1,1) NOT NULL,
+    [TaskID] [int] NOT NULL,
+   
     [Description] [nvarchar](50) NOT NULL,
-    [ParentCategoryID] [int] NULL,
+    [ParentTaskTableExtensionID] [int] NULL,
     [SortOrder] [int] NOT NULL,
 
-    CONSTRAINT [PK_TreeViewCategory] PRIMARY KEY CLUSTERED 
+    CONSTRAINT [PK_TaskTableExtension] PRIMARY KEY CLUSTERED 
     (
         [CompanyID] ASC,
-        [TaskID] ASC
+        [TaskTableExtensionID] ASC
     )
     WITH 
     (
